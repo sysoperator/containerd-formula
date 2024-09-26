@@ -13,23 +13,21 @@
 {%- endif %}
 
 include:
+{%- if containerd.pkg_name == 'containerd.io' %}
   - docker.repository
-{%- if 'kube-cluster-member' in node_roles %}
-  - crictl.install
-  {%- if salt['pkg.version_cmp'](kubernetes_version, 'v1.24.0') >= 0 %}
-  - cni
-  {%- endif %}
 {%- endif %}
+  - .deps
 
 containerd:
   pkg.installed:
     - name: {{ containerd.pkg_name }}
     - version: {{ containerd.version }}
+{%- if containerd.pkg_name == 'containerd.io' %}
     - require:
       - pkgrepo: docker-repository
-{%- if salt['grains.get']('os_family') == 'Debian' %}
-      - file: containerd-apt-pinning
+{%- endif %}
 
+{%- if salt['grains.get']('os_family') == 'Debian' %}
 containerd-apt-pinning:
   file.managed:
     - name: /etc/apt/preferences.d/containerd
@@ -37,6 +35,8 @@ containerd-apt-pinning:
         Package: {{ containerd.pkg_name }}
         Pin: version {{ containerd.version }}
         Pin-Priority: 1001
+    - require_in:
+      - pkg: containerd
 {%- endif %}
 
 {%- if 'kube-cluster-member' in node_roles %}

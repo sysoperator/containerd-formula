@@ -7,10 +7,13 @@
 {%- set containerd = salt['grains.filter_by'](
   {
     'Debian': {
-      'pkg_name': 'containerd.io',
-      'version': '1.7.21-1'
+      'pkg_name': 'containerd',
+      'version': '1.6.20~ds1-1+b1'
     },
-    'RedHat': {}
+    'RedHat': {
+      'pkg_name': 'moby-containerd',
+      'version': '1.6.36-1.el8'
+	}
   },
   grain='os_family',
   merge=salt['grains.filter_by'](k8smap, grain='kubernetes:clustername',
