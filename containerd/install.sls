@@ -76,7 +76,8 @@ clean-disabled_plugins:
           [plugins."io.containerd.grpc.v1.cri"]
         
             [plugins."io.containerd.grpc.v1.cri".containerd]
-        
+              discard_unpacked_layers = true
+
               [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
         
                 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
