@@ -76,8 +76,10 @@ clean-disabled_plugins:
           [plugins."io.containerd.grpc.v1.cri"]
         
             [plugins."io.containerd.grpc.v1.cri".containerd]
+{%- if salt['pkg.version']('docker-ce') == '' %}
               discard_unpacked_layers = true
-
+{%- endif %}
+        
               [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
         
                 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
