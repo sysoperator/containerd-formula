@@ -1,6 +1,21 @@
+{%- from "common/vars.jinja" import
+    os, oscodename, osrelease,
+    node_roles
+-%}
+{%- if 'kube-cluster-member' in node_roles %}
+  {%- from "kubernetes/vars.jinja" import
+      kubelet_container_runtime
+  -%}
+{%- endif %}
+
+{%- if kubelet_container_runtime == 'containerd' %}
 {%- set k8smap = {
   'local': {
     'pkg_name': 'containerd.io',
-    'version': '1.7.28-1~debian.13~trixie'
+    'version': '1.7.28-1~' + os + '.' + osrelease + '~' + oscodename
   }
 } -%}
+{%- else %}
+{%- set k8smap = {
+} -%}
+{%- endif %}
