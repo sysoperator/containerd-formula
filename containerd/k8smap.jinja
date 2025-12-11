@@ -8,14 +8,9 @@
   -%}
 {%- endif %}
 
-{%- if kubelet_container_runtime == 'containerd' %}
-{%- set k8smap = {
+{%- set k8smap = {} if kubelet_container_runtime != 'containerd' else {
   'local': {
     'pkg_name': 'containerd.io',
     'version': '1.7.28-1~' + os + '.' + osrelease + '~' + oscodename
   }
 } -%}
-{%- else %}
-{%- set k8smap = {
-} -%}
-{%- endif %}
