@@ -8,15 +8,14 @@
       kubernetes_version
   -%}
   {%- from "cni/vars.jinja" import
-      cni_etc_dir
+      cni_etc_dir, cni_network_name
   -%}
 {%- endif %}
 
-include:
 {%- if containerd.pkg_name == 'containerd.io' %}
+include:
   - docker.repository
 {%- endif %}
-  - .deps
 
 containerd:
   pkg.installed:
@@ -45,7 +44,7 @@ containerd.service-restart:
   service.running:
     - name: containerd
     - require:
-      - file: {{ cni_etc_dir }}/10-bridge.conf
+      - file: {{ cni_etc_dir }}/10-{{ cni_network_name }}.conf
 
 clean-disabled_plugins:
   file.replace:
