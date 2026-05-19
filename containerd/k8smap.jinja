@@ -11,6 +11,6 @@
 {%- set k8smap = {} if kubelet_container_runtime != 'containerd' else {
   'local': {
     'pkg_name': 'containerd.io',
-    'version': '1.7.28-1~' + os + '.' + osrelease + '~' + oscodename
+    'version': '1.7.29-1~' + os + '.' + osrelease + '~' + oscodename
   }
 } -%}
