@@ -5,7 +5,8 @@
 -%}
 {%- if 'kube-cluster-member' in node_roles %}
   {%- from "kubernetes/vars.jinja" import
-      kubernetes_version
+      kubernetes_version,
+      kubelet_container_runtime
   -%}
   {%- from "cni/vars.jinja" import
       cni_etc_dir, cni_network_name
@@ -40,6 +41,7 @@ containerd-apt-pinning:
 
 {%- if 'kube-cluster-member' in node_roles %}
   {%- if salt['pkg.version_cmp'](kubernetes_version, 'v1.24.0') >= 0 %}
+    {%- if kubelet_container_runtime == 'containerd' %}
 containerd.service-restart:
   service.running:
     - name: containerd
@@ -75,9 +77,9 @@ clean-disabled_plugins:
           [plugins."io.containerd.grpc.v1.cri"]
         
             [plugins."io.containerd.grpc.v1.cri".containerd]
-{%- if salt['pkg.version']('docker-ce') == '' %}
+      {%- if salt['pkg.version']('docker-ce') == '' %}
               discard_unpacked_layers = true
-{%- endif %}
+      {%- endif %}
         
               [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
         
@@ -88,5 +90,6 @@ clean-disabled_plugins:
                     SystemdCgroup = true
     - require_in:
       - file: /etc/containerd/config.toml
+	{%- endif %}
   {%- endif %}
 {%- endif %}
